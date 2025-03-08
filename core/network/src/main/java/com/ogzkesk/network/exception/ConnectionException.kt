@@ -1,3 +1,3 @@
 package com.ogzkesk.network.exception
 
-class ConnectionException(message: String = TODO()) : Exception(message)
+class ConnectionException(message: String) : Exception(message)

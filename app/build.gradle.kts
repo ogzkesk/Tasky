@@ -6,8 +6,6 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-//    alias(libs.plugins.gmsServices)
-//    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -21,11 +19,11 @@ android {
         }
     }
 
-    namespace = libs.versions.packageName.get() + ".template"
+    namespace = libs.versions.packageName.get() + ".tasky"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = libs.versions.packageName.get() + ".template"
+        applicationId = libs.versions.packageName.get() + ".tasky"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = libs.versions.versionCode.get().toInt()
@@ -83,9 +81,6 @@ dependencies {
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
-
-//    implementation(platform(libs.firebase.bom))
-//    implementation(libs.bundles.firebase)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.junit)

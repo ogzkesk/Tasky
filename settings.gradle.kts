@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Template"
+rootProject.name = "Tasky"
 include(":app")
 include(":core:data")
 include(":core:database")

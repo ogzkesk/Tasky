@@ -13,9 +13,7 @@ data class SnackBarMessage(
 ) {
     companion object {
         fun negative(message: String) = SnackBarMessage(message, Type.Negative)
-
         fun positive(message: String) = SnackBarMessage(message, Type.Positive)
-
         fun default(message: String) = SnackBarMessage(message, Type.Default)
     }
 

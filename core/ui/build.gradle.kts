@@ -57,5 +57,6 @@ dependencies {
     api(libs.bundles.ui)
 
     implementation(libs.hilt)
+    implementation(libs.androidx.ui.text.google.fonts)
     ksp(libs.hilt.compiler)
 }

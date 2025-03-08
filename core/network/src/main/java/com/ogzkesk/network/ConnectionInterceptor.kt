@@ -14,7 +14,7 @@ class ConnectionInterceptor @Inject constructor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         if (context.getSystemService<ConnectivityManager>()?.activeNetwork == null) {
-            throw ConnectionException()
+            throw ConnectionException("No internet connection")
         }
         return chain.proceed(chain.request())
     }

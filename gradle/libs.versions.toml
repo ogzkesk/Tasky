@@ -47,6 +47,7 @@ composeReport = "1.2.0"
 junit = "4.13.2"
 androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
+uiTextGoogleFonts = "1.7.8"
 
 [libraries]
 
@@ -97,6 +98,8 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 sql-cipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlCipher" }
+
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }

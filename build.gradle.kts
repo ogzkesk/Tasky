@@ -16,8 +16,6 @@ plugins {
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.composeReport) apply false
     alias(libs.plugins.androidLibrary) apply false
-//    alias(libs.plugins.gmsServices) apply false
-//    alias(libs.plugins.crashlytics) apply false
 }
 
 subprojects {
@@ -59,17 +57,18 @@ subprojects {
     }
 }
 
-allprojects {
-    tasks.whenTaskAdded {
-        if (name == "preBuild") {
-            doLast {
-                copy {
-                    description = "Copy pre-commit script from hooks/"
-                    group = "hooks"
-                    from("$rootDir/hooks/pre-commit")
-                    into("$rootDir/.git/hooks/")
-                }
-            }
-        }
-    }
-}
+// TODO <--------------
+//allprojects {
+//    tasks.whenTaskAdded {
+//        if (name == "preBuild") {
+//            doLast {
+//                copy {
+//                    description = "Copy pre-commit script from hooks/"
+//                    group = "hooks"
+//                    from("$rootDir/hooks/pre-commit")
+//                    into("$rootDir/.git/hooks/")
+//                }
+//            }
+//        }
+//    }
+//}
