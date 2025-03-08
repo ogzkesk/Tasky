@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-@Suppress("UnusedPrivateProperty") // TODO remove
 abstract class DataCache<T>(
     private val default: T,
     private val logger: Logger,
@@ -16,8 +15,11 @@ abstract class DataCache<T>(
     fun stream(): StateFlow<T> = data.asStateFlow()
 
     fun update(block: (T) -> T) {
-        // TODO debug events
-        data.update(block)
+        data.update { data ->
+            block(data).also {
+                logger.d("updated task :$it")
+            }
+        }
     }
 
     fun clear() {

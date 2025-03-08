@@ -49,7 +49,7 @@ fun HomeScreen(
     state: HomeScreenState,
     onEvent: (HomeScreenEvent) -> Unit,
 ) {
-    val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         topBar = {
@@ -119,10 +119,10 @@ private fun TaskItem(
     Card(
         modifier = modifier,
         onClick = onClick,
-        border = BorderStroke(
-            width = 1.dp,
-            color = Color(task.priority.colorHex)
-        )
+//        border = BorderStroke(
+//            width = 1.dp,
+//            color = Color(task.priority.colorHex)
+//        )
     ) {
         Column(
             modifier = Modifier
@@ -198,146 +198,167 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.LOW,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = null,
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.LOW,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.LOW,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
     Task(
         id = 0,
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis()
+        date = System.currentTimeMillis(),
+        isCompleted = true,
     ),
 )

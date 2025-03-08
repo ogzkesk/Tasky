@@ -1,5 +1,8 @@
 package com.ogzkesk.ui.theme
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF6D5E0F)
@@ -217,6 +220,10 @@ val surfaceContainerLowDarkHighContrast = Color(0xFF222017)
 val surfaceContainerDarkHighContrast = Color(0xFF333027)
 val surfaceContainerHighDarkHighContrast = Color(0xFF3E3B32)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF4A473D)
+
+val ColorScheme.placeholder: Color
+    @Composable
+    get() = MaterialTheme.colorScheme.onBackground.halfAlpha
 
 val Color.halfAlpha get() = copy(alpha = 0.5F)
 val Color.lowAlpha get() = copy(alpha = 0.5F)

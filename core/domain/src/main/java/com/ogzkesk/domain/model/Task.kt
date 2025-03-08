@@ -1,15 +1,26 @@
 package com.ogzkesk.domain.model
 
 data class Task(
-    val id: Long,
     val title: String,
     val description: String?,
     val priority: Priority,
+    val isCompleted: Boolean,
     val date: Long,
+    val id: Long = 0,
 ) {
-    enum class Priority(val colorHex: Long) {
-        LOW(0xFF2AC489),
-        MEDIUM(0xFFFFB12A),
-        HIGH(0xFFE64B3C);
+    enum class Priority {
+        LOW,
+        MEDIUM,
+        HIGH;
+    }
+
+    companion object {
+        val EMPTY = Task(
+            title = "",
+            description = null,
+            priority = Priority.LOW,
+            isCompleted = false,
+            date = 0,
+        )
     }
 }

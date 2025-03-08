@@ -54,4 +54,3 @@ val TextStyle.semiBold get() = copy(fontWeight = FontWeight.SemiBold)
 val TextStyle.bold get() = copy(fontWeight = FontWeight.Bold)
 val TextStyle.black get() = copy(fontWeight = FontWeight.Black)
 val TextStyle.thin get() = copy(fontWeight = FontWeight.Thin)
-

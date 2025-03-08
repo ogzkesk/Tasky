@@ -1,5 +1,7 @@
 package com.ogzkesk.tasky.ui.creation
 
+import com.ogzkesk.domain.model.Task
+
 data class CreationScreenState(
-    val isLoading: Boolean = false,
+    val task: Task = Task.EMPTY,
 )
