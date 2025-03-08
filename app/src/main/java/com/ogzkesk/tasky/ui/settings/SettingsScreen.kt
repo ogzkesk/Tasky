@@ -2,6 +2,7 @@ package com.ogzkesk.tasky.ui.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,6 +14,7 @@ import com.ogzkesk.ui.composable.TaskyTopBar
 import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.util.ThemedPreviews
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
@@ -21,7 +23,10 @@ fun SettingsScreen(
 ) {
     Scaffold(
         topBar = {
-            TaskyTopBar(title = stringResource(R.string.settings_screen_title))
+            TaskyTopBar(
+                title = stringResource(R.string.settings_screen_title),
+                onBack = navController::popBackStack
+            )
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues))

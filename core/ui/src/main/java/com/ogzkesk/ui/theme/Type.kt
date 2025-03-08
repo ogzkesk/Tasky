@@ -1,7 +1,9 @@
 package com.ogzkesk.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.ogzkesk.ui.R
@@ -45,4 +47,11 @@ val AppTypography = Typography(
     labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
     labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
 )
+
+val TextStyle.light get() = copy(fontWeight = FontWeight.Light)
+val TextStyle.medium get() = copy(fontWeight = FontWeight.Medium)
+val TextStyle.semiBold get() = copy(fontWeight = FontWeight.SemiBold)
+val TextStyle.bold get() = copy(fontWeight = FontWeight.Bold)
+val TextStyle.black get() = copy(fontWeight = FontWeight.Black)
+val TextStyle.thin get() = copy(fontWeight = FontWeight.Thin)
 

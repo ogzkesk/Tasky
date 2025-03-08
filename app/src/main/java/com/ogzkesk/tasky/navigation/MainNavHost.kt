@@ -1,5 +1,6 @@
 package com.ogzkesk.tasky.navigation
 
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,52 +23,54 @@ import com.ogzkesk.tasky.ui.splash.SplashScreen
 fun MainNavHost(
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = SplashScreenRoute
-    ) {
-        composable<SplashScreenRoute> {
-            SplashScreen(navController = navController)
-        }
+    Surface {
+        NavHost(
+            navController = navController,
+            startDestination = SplashScreenRoute
+        ) {
+            composable<SplashScreenRoute> {
+                SplashScreen(navController = navController)
+            }
 
-        composable<HomeScreenRoute> {
-            val viewModel: HomeScreenViewModel = hiltViewModel()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            HomeScreen(
-                navController = navController,
-                state = state,
-                onEvent = viewModel::onEvent
-            )
-        }
+            composable<HomeScreenRoute> {
+                val viewModel: HomeScreenViewModel = hiltViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                HomeScreen(
+                    navController = navController,
+                    state = state,
+                    onEvent = viewModel::onEvent
+                )
+            }
 
-        composable<CreationScreenRoute> {
-            val viewModel: CreationScreenViewModel = hiltViewModel()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            CreationScreen(
-                navController = navController,
-                state = state,
-                onEvent = viewModel::onEvent
-            )
-        }
+            composable<CreationScreenRoute> {
+                val viewModel: CreationScreenViewModel = hiltViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                CreationScreen(
+                    navController = navController,
+                    state = state,
+                    onEvent = viewModel::onEvent
+                )
+            }
 
-        composable<DetailScreenRoute> {
-            val viewModel: DetailScreenViewModel = hiltViewModel()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            DetailScreen(
-                navController = navController,
-                state = state,
-                onEvent = viewModel::onEvent
-            )
-        }
+            composable<DetailScreenRoute> {
+                val viewModel: DetailScreenViewModel = hiltViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                DetailScreen(
+                    navController = navController,
+                    state = state,
+                    onEvent = viewModel::onEvent
+                )
+            }
 
-        composable<SettingsScreenRoute> {
-            val viewModel: SettingsScreenViewModel = hiltViewModel()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            SettingsScreen(
-                navController = navController,
-                state = state,
-                onEvent = viewModel::onEvent
-            )
+            composable<SettingsScreenRoute> {
+                val viewModel: SettingsScreenViewModel = hiltViewModel()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                SettingsScreen(
+                    navController = navController,
+                    state = state,
+                    onEvent = viewModel::onEvent
+                )
+            }
         }
     }
 }
