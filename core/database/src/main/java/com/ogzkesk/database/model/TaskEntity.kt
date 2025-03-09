@@ -10,6 +10,7 @@ data class TaskEntity(
     val description: String?,
     val priority: Task.Priority,
     val isCompleted: Boolean,
+    val isDeleted: Boolean,
     val createdAt: Long,
 
     @PrimaryKey(autoGenerate = true)

@@ -13,5 +13,9 @@
     <string name="creation_screen_title">Task Creation</string>
     <string name="creation_title_field_label">Title</string>
     <string name="creation_title_field_placeholder">Enter Title</string>
+    <string name="detail_screen_trash_dialog_title">Move to trash</string>
+    <string name="detail_screen_trash_dialog_message">Are you sure you want to delete this task?</string>
+    <string name="detail_screen_moved_to_trash_message">Moved to trash</string>
+    <string name="detail_screen_restored_from_trash_message">Restored from trash</string>
 
 </resources>

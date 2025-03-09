@@ -9,5 +9,8 @@ interface TaskRepository {
     suspend fun getById(id: Long): Flow<Task?>
     suspend fun update(task: Task)
     suspend fun delete(task: Task)
+    suspend fun complete(task: Task)
+    suspend fun moveToTrash(task: Task)
+    suspend fun restoreFromTrash(task: Task)
     suspend fun clear()
 }

@@ -8,6 +8,7 @@ fun TaskEntity.toModel(): Task = Task(
     description = description,
     priority = priority,
     isCompleted = isCompleted,
+    isDeleted = isDeleted,
     createdAt = createdAt,
     id = id
 )
@@ -17,6 +18,7 @@ fun Task.toEntity(): TaskEntity = TaskEntity(
     description = description,
     priority = priority,
     isCompleted = isCompleted,
+    isDeleted = isDeleted,
     createdAt = createdAt,
     id = id
 )

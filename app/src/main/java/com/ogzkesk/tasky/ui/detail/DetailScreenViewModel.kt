@@ -34,9 +34,35 @@ class DetailScreenViewModel @Inject constructor(
     override fun onEvent(event: DetailScreenEvent) {
         when (event) {
             is DetailScreenEvent.ToggleTaskCompleted -> withState {
-                viewModelScope.launch(ioDispatcher) {
-                    task?.copy(isCompleted = event.value)?.let {
-                        taskRepository.update(it)
+                viewModelScope.launch {
+                    task?.let {
+                        taskRepository.complete(it)
+                    }
+                }
+            }
+
+            is DetailScreenEvent.ToggleTrashDialog -> withState {
+                updateState {
+                    it.copy(showTrashDialog = event.value)
+                }
+            }
+
+            is DetailScreenEvent.MoveToTrash -> withState {
+                viewModelScope.launch {
+                    task?.let {
+                        taskRepository.moveToTrash(it)
+                        // TODO check
+                        event.callback()
+                    }
+                }
+            }
+
+            is DetailScreenEvent.RestoreFromTrash -> withState {
+                viewModelScope.launch {
+                    task?.let {
+                        taskRepository.restoreFromTrash(it)
+                        // TODO check
+                        event.callback()
                     }
                 }
             }

@@ -5,6 +5,7 @@ data class Task(
     val description: String?,
     val priority: Priority,
     val isCompleted: Boolean,
+    val isDeleted: Boolean,
     val createdAt: Long,
     val id: Long = 0,
 ) {
@@ -20,6 +21,7 @@ data class Task(
             description = null,
             priority = Priority.LOW,
             isCompleted = false,
+            isDeleted = false,
             createdAt = 0,
         )
     }

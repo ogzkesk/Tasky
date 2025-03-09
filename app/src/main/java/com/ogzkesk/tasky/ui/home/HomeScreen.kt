@@ -196,6 +196,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -204,6 +205,7 @@ val mockTasks = listOf(
         priority = Task.Priority.MEDIUM,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -212,6 +214,7 @@ val mockTasks = listOf(
         priority = Task.Priority.LOW,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -220,6 +223,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -228,6 +232,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -236,6 +241,7 @@ val mockTasks = listOf(
         priority = Task.Priority.LOW,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -244,6 +250,7 @@ val mockTasks = listOf(
         priority = Task.Priority.MEDIUM,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -252,6 +259,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -260,6 +268,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -268,6 +277,7 @@ val mockTasks = listOf(
         priority = Task.Priority.MEDIUM,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -276,6 +286,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -284,6 +295,7 @@ val mockTasks = listOf(
         priority = Task.Priority.MEDIUM,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -292,6 +304,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -300,6 +313,7 @@ val mockTasks = listOf(
         priority = Task.Priority.LOW,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -308,6 +322,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -316,6 +331,7 @@ val mockTasks = listOf(
         priority = Task.Priority.MEDIUM,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -324,6 +340,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -332,6 +349,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -340,6 +358,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -348,6 +367,7 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
     Task(
         id = 0,
@@ -356,5 +376,6 @@ val mockTasks = listOf(
         priority = Task.Priority.HIGH,
         createdAt = System.currentTimeMillis(),
         isCompleted = true,
+        isDeleted = false
     ),
 )
