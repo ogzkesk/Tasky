@@ -1,6 +1,5 @@
 package com.ogzkesk.tasky.ui.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -101,8 +99,8 @@ fun HomeScreen(
             ) { task ->
                 TaskItem(
                     task = task,
-                    onClick = {
-                        navController.navigate(DetailScreenRoute)
+                    onClick = { id ->
+                        navController.navigate(DetailScreenRoute(id))
                     }
                 )
             }
@@ -114,15 +112,13 @@ fun HomeScreen(
 private fun TaskItem(
     modifier: Modifier = Modifier,
     task: Task,
-    onClick: () -> Unit = {}
+    onClick: (id: Long) -> Unit = {}
 ) {
     Card(
         modifier = modifier,
-        onClick = onClick,
-//        border = BorderStroke(
-//            width = 1.dp,
-//            color = Color(task.priority.colorHex)
-//        )
+        onClick = {
+            onClick(task.id)
+        },
     ) {
         Column(
             modifier = Modifier
@@ -140,7 +136,7 @@ private fun TaskItem(
             )
             Text(
                 modifier = Modifier.align(Alignment.End),
-                text = task.date
+                text = task.createdAt
                     .toLocalDateTime()
                     .format(DateTimeFormatter.ISO_DATE),
                 style = MaterialTheme.typography.bodySmall.copy(
@@ -198,7 +194,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -206,7 +202,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -214,7 +210,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.LOW,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -222,7 +218,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = null,
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -230,7 +226,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -238,7 +234,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.LOW,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -246,7 +242,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -254,7 +250,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -262,7 +258,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -270,7 +266,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -278,7 +274,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -286,7 +282,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -294,7 +290,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -302,7 +298,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.LOW,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -310,7 +306,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -318,7 +314,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.MEDIUM,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -326,7 +322,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -334,7 +330,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -342,7 +338,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -350,7 +346,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
     Task(
@@ -358,7 +354,7 @@ val mockTasks = listOf(
         title = "Task 1",
         description = "Description 1",
         priority = Task.Priority.HIGH,
-        date = System.currentTimeMillis(),
+        createdAt = System.currentTimeMillis(),
         isCompleted = true,
     ),
 )

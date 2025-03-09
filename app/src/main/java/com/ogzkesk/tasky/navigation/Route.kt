@@ -12,7 +12,9 @@ object HomeScreenRoute
 object CreationScreenRoute
 
 @Serializable
-object DetailScreenRoute
+data class DetailScreenRoute(
+    val id: Long,
+)
 
 @Serializable
 object SettingsScreenRoute

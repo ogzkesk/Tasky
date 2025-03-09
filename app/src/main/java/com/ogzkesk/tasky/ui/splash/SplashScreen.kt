@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ogzkesk.tasky.R
 import com.ogzkesk.tasky.navigation.HomeScreenRoute
+import com.ogzkesk.tasky.navigation.SplashScreenRoute
 import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.util.ThemedPreviews
 import kotlinx.coroutines.delay
@@ -24,7 +25,11 @@ fun SplashScreen(
 ) {
     LaunchedEffect(key1 = Unit) {
         delay(3000)
-        navController.navigate(HomeScreenRoute)
+        navController.navigate(HomeScreenRoute){
+            popUpTo(SplashScreenRoute){
+                inclusive = true
+            }
+        }
     }
 
     Box(

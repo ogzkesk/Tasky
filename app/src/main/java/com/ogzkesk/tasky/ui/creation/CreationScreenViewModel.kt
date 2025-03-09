@@ -31,7 +31,7 @@ class CreationScreenViewModel @Inject constructor(
                     // TODO fieldValidation.
 
                     val result = taskRepository.add(
-                        task.copy(date = System.currentTimeMillis())
+                        task.copy(createdAt = System.currentTimeMillis())
                     )
 
                     // TODO process result

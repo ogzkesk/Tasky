@@ -1,5 +1,7 @@
 package com.ogzkesk.tasky.ui.detail
 
+import com.ogzkesk.domain.model.Task
+
 data class DetailScreenState(
-    val isLoading: Boolean = false,
+    val task: Task? = null,
 )

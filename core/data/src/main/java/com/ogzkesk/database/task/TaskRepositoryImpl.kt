@@ -12,9 +12,7 @@ class TaskRepositoryImpl @Inject constructor(
 
     override fun stream(): Flow<List<Task>> = localDataSource.getTasks()
 
-    override suspend fun getById(id: Long): Task? {
-        return localDataSource.getTaskById(id)
-    }
+    override suspend fun getById(id: Long): Flow<Task?> = localDataSource.getTaskById(id)
 
     override suspend fun add(task: Task) {
         localDataSource.insertTask(task)

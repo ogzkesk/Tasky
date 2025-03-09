@@ -16,8 +16,8 @@ class TaskDataSourceImpl(
         }
     }
 
-    override suspend fun getTaskById(id: Long): Task? {
-        return dao.getTaskById(id)?.toModel()
+    override suspend fun getTaskById(id: Long): Flow<Task?> {
+        return dao.getTaskById(id).map { it?.toModel() }
     }
 
     override suspend fun insertTask(task: Task) {
