@@ -221,6 +221,10 @@ val surfaceContainerDarkHighContrast = Color(0xFF333027)
 val surfaceContainerHighDarkHighContrast = Color(0xFF3E3B32)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF4A473D)
 
+val ColorPriorityLow = Color(0xFF2AC489)
+val ColorPriorityMedium = Color(0xFFFFB12A)
+val ColorPriorityHigh = Color(0xFFE64B3C)
+
 val ColorScheme.placeholder: Color
     @Composable
     get() = MaterialTheme.colorScheme.onBackground.halfAlpha

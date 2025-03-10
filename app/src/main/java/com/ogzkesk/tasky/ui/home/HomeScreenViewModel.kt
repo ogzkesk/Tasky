@@ -63,9 +63,21 @@ class HomeScreenViewModel @Inject constructor(
                 }
             }
 
+            is HomeScreenEvent.UndoCompletedTask -> {
+                viewModelScope.launch {
+                    taskRepository.update(event.task.copy(isCompleted = false))
+                }
+            }
+
             is HomeScreenEvent.RemoveTask -> {
                 viewModelScope.launch {
                     taskRepository.delete(event.task)
+                }
+            }
+
+            is HomeScreenEvent.UndoRemovedTask -> {
+                viewModelScope.launch {
+                    taskRepository.add(event.task)
                 }
             }
         }

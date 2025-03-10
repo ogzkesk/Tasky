@@ -1,9 +1,9 @@
 package com.ogzkesk.tasky.ui.home
 
+import android.content.Context
 import android.text.format.DateUtils
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,7 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -28,6 +29,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -36,12 +41,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,10 +60,13 @@ import com.ogzkesk.tasky.R
 import com.ogzkesk.tasky.navigation.CreationScreenRoute
 import com.ogzkesk.tasky.navigation.DetailScreenRoute
 import com.ogzkesk.ui.composable.DismissBoxLayout
+import com.ogzkesk.ui.theme.ColorPriorityHigh
+import com.ogzkesk.ui.theme.ColorPriorityLow
+import com.ogzkesk.ui.theme.ColorPriorityMedium
 import com.ogzkesk.ui.theme.TaskyTheme
-import com.ogzkesk.ui.theme.lowAlpha
 import com.ogzkesk.ui.util.ThemedPreviews
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -68,9 +77,15 @@ fun HomeScreen(
     state: HomeScreenState,
     onEvent: (HomeScreenEvent) -> Unit,
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 title = {
@@ -110,13 +125,13 @@ fun HomeScreen(
             }
         }
     ) { paddingValues ->
+
         if (state.tasks == null) {
             EmptyTaskUI()
         } else {
             Column(
-                modifier = Modifier.padding(
-                    top = paddingValues.calculateTopPadding()
-                )
+                modifier = Modifier
+                    .padding(top = paddingValues.calculateTopPadding())
             ) {
                 TabRow(
                     selectedTabIndex = state.selectedTab.ordinal
@@ -154,6 +169,7 @@ fun HomeScreen(
                         },
                         key = { it.id }
                     ) { task ->
+
                         DismissBoxLayout(
                             modifier = Modifier.animateItem(
                                 fadeInSpec = tween(200),
@@ -162,15 +178,42 @@ fun HomeScreen(
                             state = rememberSwipeToDismissBoxState(
                                 confirmValueChange = {
                                     return@rememberSwipeToDismissBoxState when (it) {
+
                                         SwipeToDismissBoxValue.StartToEnd -> {
                                             if (!task.isCompleted) {
-                                                onEvent(HomeScreenEvent.CompleteTask(task))
+                                                coroutineScope.launch {
+                                                    onEvent(HomeScreenEvent.CompleteTask(task))
+                                                    showUndoSnackbar(
+                                                        context,
+                                                        snackbarHostState,
+                                                        context.getString(R.string.home_screen_completed_task_message),
+                                                    ) {
+                                                        onEvent(
+                                                            HomeScreenEvent.UndoCompletedTask(task)
+                                                        )
+                                                    }
+                                                }
+                                            } else {
+                                                coroutineScope.launch {
+                                                    snackbarHostState.showSnackbar(
+                                                        context.getString(R.string.home_screen_already_completed_message),
+                                                    )
+                                                }
                                             }
                                             false
                                         }
 
                                         SwipeToDismissBoxValue.EndToStart -> {
-                                            onEvent(HomeScreenEvent.RemoveTask(task))
+                                            coroutineScope.launch {
+                                                onEvent(HomeScreenEvent.RemoveTask(task))
+                                                showUndoSnackbar(
+                                                    context,
+                                                    snackbarHostState,
+                                                    context.getString(R.string.home_screen_removed_task_message),
+                                                ) {
+                                                    onEvent(HomeScreenEvent.UndoRemovedTask(task))
+                                                }
+                                            }
                                             true
                                         }
 
@@ -197,49 +240,30 @@ fun HomeScreen(
 private fun TaskItem(
     modifier: Modifier = Modifier,
     task: Task,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
-    val feedback = LocalHapticFeedback.current
-
     Card(
         modifier = modifier,
         onClick = onClick,
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
+            Row {
                 Text(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 12.dp),
                     text = task.title,
                     style = MaterialTheme.typography.headlineSmall,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
-                Text(
-                    text = task.description ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                Text(
-                    text = stringResource(R.string.home_screen_priority, task.priority.toString()),
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                Text(
-                    text = task.date.toLocalDateTime().format(DateTimeFormatter.ISO_DATE),
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
+
                 Text(
                     text = convertDateFormat(task.createdAt),
                     style = MaterialTheme.typography.bodySmall.copy(
@@ -247,16 +271,62 @@ private fun TaskItem(
                     )
                 )
             }
-            Icon(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clickable {
-                        feedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    },
-                imageVector = Icons.Default.Menu,
-                contentDescription = "drag",
-                tint = MaterialTheme.colorScheme.onBackground.lowAlpha
+
+            Text(
+                text = task.description ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    val tint = when (task.priority) {
+                        Task.Priority.HIGH -> ColorPriorityHigh
+                        Task.Priority.MEDIUM -> ColorPriorityMedium
+                        Task.Priority.LOW -> ColorPriorityLow
+                    }
+
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        imageVector = Icons.Outlined.Book,
+                        contentDescription = "priority",
+                        tint = tint
+                    )
+                    Text(
+                        text = task.priority.toString(),
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        color = tint
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        imageVector = Icons.Outlined.DateRange,
+                        contentDescription = "date",
+                    )
+                    Text(
+                        text = task.date
+                            .toLocalDateTime()
+                            .format(DateTimeFormatter.ISO_DATE),
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
+            }
         }
     }
 }
@@ -317,6 +387,22 @@ private fun SortDropdown(
                 }
             )
         }
+    }
+}
+
+private suspend fun showUndoSnackbar(
+    context: Context,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    onUndo: () -> Unit
+) {
+    val result = snackbarHostState.showSnackbar(
+        message = message,
+        duration = SnackbarDuration.Short,
+        actionLabel = context.getString(R.string.home_screen_snackbar_undo_action),
+    )
+    if (result == SnackbarResult.ActionPerformed) {
+        onUndo()
     }
 }
 

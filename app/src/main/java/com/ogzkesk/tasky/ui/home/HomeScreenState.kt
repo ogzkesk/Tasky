@@ -6,7 +6,7 @@ data class HomeScreenState(
     val tasks: List<Task>? = null,
     val showDropdownMenu: Boolean = false,
     val sortingMethod: SortingMethod = SortingMethod.Default,
-    val selectedTab: HomeTab = HomeTab.All
+    val selectedTab: HomeTab = HomeTab.All,
 ) {
     val completedTasks: List<Task>?
         get() = tasks?.filter { it.isCompleted }
