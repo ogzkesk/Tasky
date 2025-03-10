@@ -22,5 +22,7 @@
     <string name="home_screen_removed_task_message">Task removed</string>
     <string name="home_screen_snackbar_undo_action">Undo</string>
     <string name="home_screen_already_completed_message">This task already completed</string>
+    <string name="home_circular_completed_tasks">%1$d Completed</string>
+    <string name="home_circular_completed_tasks_desc">Out of %1$d task</string>
 
 </resources>

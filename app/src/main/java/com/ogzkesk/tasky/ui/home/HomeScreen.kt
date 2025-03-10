@@ -1,9 +1,6 @@
 package com.ogzkesk.tasky.ui.home
 
-import android.content.Context
 import android.text.format.DateUtils
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,33 +18,22 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -59,14 +45,16 @@ import com.ogzkesk.domain.model.Task
 import com.ogzkesk.tasky.R
 import com.ogzkesk.tasky.navigation.CreationScreenRoute
 import com.ogzkesk.tasky.navigation.DetailScreenRoute
-import com.ogzkesk.ui.composable.DismissBoxLayout
+import com.ogzkesk.tasky.ui.home.content.HomeDismissBox
+import com.ogzkesk.tasky.ui.home.content.HomeEmptyLayout
+import com.ogzkesk.tasky.ui.home.content.HomeHeaderContent
+import com.ogzkesk.tasky.ui.home.content.HomeMenu
+import com.ogzkesk.tasky.ui.home.content.HomeTabRow
 import com.ogzkesk.ui.theme.ColorPriorityHigh
 import com.ogzkesk.ui.theme.ColorPriorityLow
 import com.ogzkesk.ui.theme.ColorPriorityMedium
 import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.util.ThemedPreviews
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -77,8 +65,6 @@ fun HomeScreen(
     state: HomeScreenState,
     onEvent: (HomeScreenEvent) -> Unit,
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -103,7 +89,7 @@ fun HomeScreen(
                             contentDescription = "sort"
                         )
                     }
-                    SortDropdown(
+                    HomeMenu(
                         expanded = state.showDropdownMenu,
                         sortingMethod = state.sortingMethod,
                         onExpandChange = { onEvent(HomeScreenEvent.ToggleDropdownMenu(it)) },
@@ -127,27 +113,16 @@ fun HomeScreen(
     ) { paddingValues ->
 
         if (state.tasks == null) {
-            EmptyTaskUI()
+            HomeEmptyLayout()
         } else {
             Column(
                 modifier = Modifier
                     .padding(top = paddingValues.calculateTopPadding())
             ) {
-                TabRow(
-                    selectedTabIndex = state.selectedTab.ordinal
-                ) {
-                    HomeScreenState.HomeTab.entries.forEach {
-                        Tab(
-                            selected = state.selectedTab == it,
-                            onClick = {
-                                onEvent(HomeScreenEvent.OnTabSelected(it))
-                            },
-                            text = {
-                                Text(text = it.name)
-                            }
-                        )
-                    }
-                }
+                HomeTabRow(
+                    selectedTab = state.selectedTab,
+                    onEvent = onEvent
+                )
 
                 LazyColumn(
                     modifier = Modifier
@@ -161,6 +136,15 @@ fun HomeScreen(
                         end = 8.dp
                     )
                 ) {
+                    item {
+                        HomeHeaderContent(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 24.dp),
+                            state = state,
+                        )
+                    }
+
                     items(
                         items = when (state.selectedTab) {
                             HomeScreenState.HomeTab.All -> state.tasks
@@ -169,58 +153,10 @@ fun HomeScreen(
                         },
                         key = { it.id }
                     ) { task ->
-
-                        DismissBoxLayout(
-                            modifier = Modifier.animateItem(
-                                fadeInSpec = tween(200),
-                                fadeOutSpec = tween(200),
-                            ),
-                            state = rememberSwipeToDismissBoxState(
-                                confirmValueChange = {
-                                    return@rememberSwipeToDismissBoxState when (it) {
-
-                                        SwipeToDismissBoxValue.StartToEnd -> {
-                                            if (!task.isCompleted) {
-                                                coroutineScope.launch {
-                                                    onEvent(HomeScreenEvent.CompleteTask(task))
-                                                    showUndoSnackbar(
-                                                        context,
-                                                        snackbarHostState,
-                                                        context.getString(R.string.home_screen_completed_task_message),
-                                                    ) {
-                                                        onEvent(
-                                                            HomeScreenEvent.UndoCompletedTask(task)
-                                                        )
-                                                    }
-                                                }
-                                            } else {
-                                                coroutineScope.launch {
-                                                    snackbarHostState.showSnackbar(
-                                                        context.getString(R.string.home_screen_already_completed_message),
-                                                    )
-                                                }
-                                            }
-                                            false
-                                        }
-
-                                        SwipeToDismissBoxValue.EndToStart -> {
-                                            coroutineScope.launch {
-                                                onEvent(HomeScreenEvent.RemoveTask(task))
-                                                showUndoSnackbar(
-                                                    context,
-                                                    snackbarHostState,
-                                                    context.getString(R.string.home_screen_removed_task_message),
-                                                ) {
-                                                    onEvent(HomeScreenEvent.UndoRemovedTask(task))
-                                                }
-                                            }
-                                            true
-                                        }
-
-                                        SwipeToDismissBoxValue.Settled -> false
-                                    }
-                                }
-                            )
+                        HomeDismissBox(
+                            task = task,
+                            snackbarHostState = snackbarHostState,
+                            onEvent = onEvent
                         ) {
                             TaskItem(
                                 task = task,
@@ -280,6 +216,7 @@ private fun TaskItem(
             )
 
             Row(
+                modifier = Modifier.align(Alignment.End),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -331,80 +268,6 @@ private fun TaskItem(
     }
 }
 
-@Composable
-fun HeaderItem(
-    modifier: Modifier = Modifier,
-    tasks: ImmutableList<Task>,
-) {
-
-}
-
-@Composable
-fun EmptyTaskUI(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            modifier = modifier,
-            imageVector = Icons.Default.Add,
-            contentDescription = "Add"
-        )
-        Text(
-            text = "Empty",
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}
-
-@Composable
-private fun SortDropdown(
-    expanded: Boolean,
-    sortingMethod: HomeScreenState.SortingMethod,
-    onExpandChange: (Boolean) -> Unit,
-    onSort: (HomeScreenState.SortingMethod) -> Unit
-) {
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { onExpandChange(false) }
-    ) {
-        HomeScreenState.SortingMethod.entries.forEach { method ->
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = method.name,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (sortingMethod == method) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            Color.Unspecified
-                        }
-                    )
-                },
-                onClick = {
-                    onSort(method)
-                }
-            )
-        }
-    }
-}
-
-private suspend fun showUndoSnackbar(
-    context: Context,
-    snackbarHostState: SnackbarHostState,
-    message: String,
-    onUndo: () -> Unit
-) {
-    val result = snackbarHostState.showSnackbar(
-        message = message,
-        duration = SnackbarDuration.Short,
-        actionLabel = context.getString(R.string.home_screen_snackbar_undo_action),
-    )
-    if (result == SnackbarResult.ActionPerformed) {
-        onUndo()
-    }
-}
 
 private fun convertDateFormat(timeMillis: Long): String {
     val date = Date(timeMillis)

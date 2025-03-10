@@ -3,6 +3,7 @@ package com.ogzkesk.ui.theme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF6D5E0F)
@@ -225,9 +226,21 @@ val ColorPriorityLow = Color(0xFF2AC489)
 val ColorPriorityMedium = Color(0xFFFFB12A)
 val ColorPriorityHigh = Color(0xFFE64B3C)
 
+val IndicatorBrush = Brush.linearGradient(
+    listOf(
+        ColorPriorityMedium,
+        ColorPriorityHigh,
+        ColorPriorityLow,
+    )
+)
+
 val ColorScheme.placeholder: Color
     @Composable
     get() = MaterialTheme.colorScheme.onBackground.halfAlpha
+
+val ColorScheme.success: Color
+    @Composable
+    get() = ColorPriorityLow
 
 val Color.halfAlpha get() = copy(alpha = 0.5F)
 val Color.lowAlpha get() = copy(alpha = 0.2F)

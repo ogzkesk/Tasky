@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ogzkesk.ui.theme.success
 
 @Composable
 fun DismissBoxLayout(
@@ -50,7 +51,7 @@ fun DismissBoxLayout(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primaryContainer),
+                        .background(MaterialTheme.colorScheme.success),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Icon(

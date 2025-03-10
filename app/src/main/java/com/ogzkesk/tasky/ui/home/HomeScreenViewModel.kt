@@ -22,7 +22,7 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             taskRepository.stream().collect { tasks ->
                 updateState { state ->
-                    state.copy(tasks = tasks)
+                    state.copy(tasks = tasks.ifEmpty { null })
                 }
                 logger.d("Task Stream: $tasks")
             }
