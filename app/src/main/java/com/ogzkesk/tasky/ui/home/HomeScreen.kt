@@ -1,6 +1,7 @@
 package com.ogzkesk.tasky.ui.home
 
 import android.text.format.DateUtils
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,11 +28,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +53,7 @@ import com.ogzkesk.domain.model.Task
 import com.ogzkesk.tasky.R
 import com.ogzkesk.tasky.navigation.CreationScreenRoute
 import com.ogzkesk.tasky.navigation.DetailScreenRoute
+import com.ogzkesk.ui.composable.DismissBoxLayout
 import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.theme.lowAlpha
 import com.ogzkesk.ui.util.ThemedPreviews
@@ -147,14 +152,40 @@ fun HomeScreen(
                             HomeScreenState.HomeTab.Pending -> state.pendingTasks.orEmpty()
                             HomeScreenState.HomeTab.Completed -> state.completedTasks.orEmpty()
                         },
-                    ) { t ->
-                        val task = state.tasks.find { t == it } ?: return@items
-                        TaskItem(
-                            task = task,
-                            onClick = dropUnlessResumed {
-                                navController.navigate(DetailScreenRoute(task.id))
-                            }
-                        )
+                        key = { it.id }
+                    ) { task ->
+                        DismissBoxLayout(
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = tween(200),
+                                fadeOutSpec = tween(200),
+                            ),
+                            state = rememberSwipeToDismissBoxState(
+                                confirmValueChange = {
+                                    return@rememberSwipeToDismissBoxState when (it) {
+                                        SwipeToDismissBoxValue.StartToEnd -> {
+                                            if (!task.isCompleted) {
+                                                onEvent(HomeScreenEvent.CompleteTask(task))
+                                            }
+                                            false
+                                        }
+
+                                        SwipeToDismissBoxValue.EndToStart -> {
+                                            onEvent(HomeScreenEvent.RemoveTask(task))
+                                            true
+                                        }
+
+                                        SwipeToDismissBoxValue.Settled -> false
+                                    }
+                                }
+                            )
+                        ) {
+                            TaskItem(
+                                task = task,
+                                onClick = dropUnlessResumed {
+                                    navController.navigate(DetailScreenRoute(task.id))
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -169,6 +200,7 @@ private fun TaskItem(
     onClick: () -> Unit = {}
 ) {
     val feedback = LocalHapticFeedback.current
+
     Card(
         modifier = modifier,
         onClick = onClick,
@@ -176,6 +208,7 @@ private fun TaskItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(100.dp)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

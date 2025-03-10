@@ -52,6 +52,22 @@ class HomeScreenViewModel @Inject constructor(
             is HomeScreenEvent.OnTabSelected -> updateState {
                 it.copy(selectedTab = event.tab)
             }
+
+            is HomeScreenEvent.OnTasksReordered -> updateState {
+                it.copy(tasks = event.tasks)
+            }
+
+            is HomeScreenEvent.CompleteTask -> {
+                viewModelScope.launch {
+                    taskRepository.update(event.task.copy(isCompleted = true))
+                }
+            }
+
+            is HomeScreenEvent.RemoveTask -> {
+                viewModelScope.launch {
+                    taskRepository.delete(event.task)
+                }
+            }
         }
     }
 }
