@@ -20,8 +20,8 @@ class TaskDataSourceImpl(
         return dao.getTaskById(id).map { it?.toModel() }
     }
 
-    override suspend fun insertTask(task: Task) {
-        dao.insertTask(task.toEntity())
+    override suspend fun insertTask(task: Task): Long {
+        return dao.insertTask(task.toEntity())
     }
 
     override suspend fun updateTask(task: Task) {
@@ -29,7 +29,7 @@ class TaskDataSourceImpl(
     }
 
     override suspend fun deleteTask(task: Task) {
-        dao.deleteTask(task.toEntity())
+        dao.delete(task.toEntity())
     }
 
     override suspend fun clear() {

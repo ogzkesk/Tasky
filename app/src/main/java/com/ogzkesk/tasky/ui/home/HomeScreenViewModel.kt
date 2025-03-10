@@ -30,8 +30,10 @@ class HomeScreenViewModel @Inject constructor(
 
     override fun onEvent(event: HomeScreenEvent) {
         when(event){
+            HomeScreenEvent.ShowDropdownMenu -> updateState {
+                it.copy(showDropdownMenu = true)
+            }
 
-            else -> {}
         }
     }
 }

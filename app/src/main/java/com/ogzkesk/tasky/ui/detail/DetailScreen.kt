@@ -7,25 +7,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ogzkesk.domain.ext.toLocalDateTime
@@ -36,7 +31,6 @@ import com.ogzkesk.ui.composable.TaskyTopBar
 import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.theme.semiBold
 import com.ogzkesk.ui.util.ThemedPreviews
-import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,26 +40,21 @@ fun DetailScreen(
     state: DetailScreenState,
     onEvent: (DetailScreenEvent) -> Unit,
 ) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val snackBarHostState = remember { SnackbarHostState() }
+    val popBack = dropUnlessResumed {
+        navController.popBackStack()
+    }
+
+    LaunchedEffect(state) {
+        if (state.isDeleted) popBack()
+    }
 
     TaskyAlertDialog(
         enabled = state.showTrashDialog,
-        title = stringResource(R.string.detail_screen_trash_dialog_title),
-        message = stringResource(R.string.detail_screen_trash_dialog_message),
-        onConfirm = {
+        title = stringResource(R.string.detail_screen_delete_dialog_title),
+        message = stringResource(R.string.detail_screen_delete_dialog_message),
+        onConfirm = dropUnlessResumed {
             onEvent(DetailScreenEvent.ToggleTrashDialog(false))
-            onEvent(
-                DetailScreenEvent.MoveToTrash {
-                    coroutineScope.launch {
-                        snackBarHostState.showSnackbar(
-                            message = context.getString(R.string.detail_screen_moved_to_trash_message),
-                            duration = SnackbarDuration.Short
-                        )
-                    }
-                }
-            )
+            onEvent(DetailScreenEvent.DeleteTask)
         },
         onDismiss = {
             onEvent(DetailScreenEvent.ToggleTrashDialog(false))
@@ -73,46 +62,20 @@ fun DetailScreen(
     )
 
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState)
-        },
         topBar = {
             TaskyTopBar(
                 title = stringResource(R.string.detail_screen_title),
-                onBack = navController::popBackStack,
+                onBack = popBack,
                 actions = {
-                    if (state.task?.isDeleted == true) {
-                        IconButton(
-                            onClick = {
-                                onEvent(
-                                    DetailScreenEvent.RestoreFromTrash {
-                                        coroutineScope.launch {
-                                            snackBarHostState.showSnackbar(
-                                                message = context.getString(R.string.detail_screen_restored_from_trash_message),
-                                                duration = SnackbarDuration.Short
-                                            )
-                                        }
-                                    }
-                                )
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Restore,
-                                tint = MaterialTheme.colorScheme.primary,
-                                contentDescription = "restore_from_trash"
-                            )
+                    IconButton(
+                        onClick = {
+                            onEvent(DetailScreenEvent.ToggleTrashDialog(true))
                         }
-                    } else {
-                        IconButton(
-                            onClick = {
-                                onEvent(DetailScreenEvent.ToggleTrashDialog(true))
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "move_to_trash"
-                            )
-                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "move_to_trash"
+                        )
                     }
                 }
             )
@@ -123,7 +86,7 @@ fun DetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             state.task?.let { task ->
                 Text(
@@ -186,7 +149,7 @@ private fun HomeScreenPreview() {
                     createdAt = System.currentTimeMillis(),
                     priority = Task.Priority.HIGH,
                     isCompleted = true,
-                    isDeleted = false
+                    date = System.currentTimeMillis()
                 )
             ),
             onEvent = {}

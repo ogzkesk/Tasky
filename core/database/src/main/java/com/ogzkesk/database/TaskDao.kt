@@ -19,13 +19,13 @@ interface TaskDao {
     fun getTaskById(id: Long): Flow<TaskEntity?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertTask(task: TaskEntity)
+    suspend fun insertTask(task: TaskEntity): Long
 
     @Update
     suspend fun updateTask(task: TaskEntity)
 
     @Delete
-    suspend fun deleteTask(task: TaskEntity)
+    suspend fun delete(task: TaskEntity)
 
     @Query("DELETE FROM task_table")
     suspend fun deleteAllTasks()

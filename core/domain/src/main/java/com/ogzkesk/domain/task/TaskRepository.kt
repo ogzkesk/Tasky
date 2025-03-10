@@ -5,12 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
     fun stream(): Flow<List<Task>>
-    suspend fun add(task: Task)
+    suspend fun add(task: Task): Long
     suspend fun getById(id: Long): Flow<Task?>
     suspend fun update(task: Task)
     suspend fun delete(task: Task)
-    suspend fun complete(task: Task)
-    suspend fun moveToTrash(task: Task)
-    suspend fun restoreFromTrash(task: Task)
     suspend fun clear()
 }

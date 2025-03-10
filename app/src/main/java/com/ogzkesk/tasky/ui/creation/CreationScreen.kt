@@ -3,11 +3,13 @@ package com.ogzkesk.tasky.ui.creation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.ZeroCornerSize
@@ -18,7 +20,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -30,19 +31,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ogzkesk.domain.model.Task
 import com.ogzkesk.tasky.R
+import com.ogzkesk.ui.composable.TaskyDatePickerField
+import com.ogzkesk.ui.composable.TaskyTextField
 import com.ogzkesk.ui.composable.TaskyTopBar
 import com.ogzkesk.ui.theme.TaskyTheme
-import com.ogzkesk.ui.theme.halfAlpha
-import com.ogzkesk.ui.theme.placeholder
 import com.ogzkesk.ui.theme.semiBold
 import com.ogzkesk.ui.util.ThemedPreviews
 
@@ -55,21 +56,35 @@ fun CreationScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val titleFocusRequester = remember { FocusRequester() }
+    val dateFocusRequester = remember { FocusRequester() }
+
+    val popBack = dropUnlessResumed {
+        navController.popBackStack()
+    }
 
     LaunchedEffect(Unit) {
         titleFocusRequester.requestFocus()
+    }
+
+    LaunchedEffect(state) {
+        if (state.titleFieldError) {
+            titleFocusRequester.requestFocus()
+        }
+        if (state.dateFieldError) {
+            dateFocusRequester.requestFocus()
+        }
     }
 
     Scaffold(
         topBar = {
             TaskyTopBar(
                 title = stringResource(R.string.creation_screen_title),
-                onBack = navController::popBackStack
+                onBack = popBack
             )
         },
         bottomBar = {
             BottomAppBar(
-                windowInsets = WindowInsets.ime
+                windowInsets = WindowInsets.safeContent.only(WindowInsetsSides.Bottom)
             ) {
                 Button(
                     modifier = Modifier
@@ -80,7 +95,7 @@ fun CreationScreen(
                         focusManager.clearFocus()
                         onEvent(
                             CreationScreenEvent.OnCreate {
-                                navController.popBackStack()
+                                popBack()
                             }
                         )
                     }
@@ -99,105 +114,99 @@ fun CreationScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(titleFocusRequester),
+            TaskyTextField(
                 value = state.task.title,
-                singleLine = true,
-                maxLines = 1,
                 onValueChange = {
                     onEvent(CreationScreenEvent.TitleTextChangedEvent(it))
                 },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.creation_title_field_placeholder),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.placeholder
-                        )
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.creation_title_field_label),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
+                focusRequester = titleFocusRequester,
+                isError = state.titleFieldError,
+                placeHolder = stringResource(R.string.creation_title_field_placeholder),
+                label = stringResource(R.string.creation_title_field_label),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions {
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             )
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
+            TaskyTextField(
+                modifier = Modifier.height(200.dp),
                 value = state.task.description.orEmpty(),
                 singleLine = false,
                 onValueChange = {
                     onEvent(CreationScreenEvent.DescriptionTextChangedEvent(it))
                 },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.creation_description_field_placeholder),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.placeholder
-                        )
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.creation_description_field_label),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                placeHolder = stringResource(R.string.creation_description_field_placeholder),
+                label = stringResource(R.string.creation_description_field_label),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions {
-                    focusManager.clearFocus()
+                    dateFocusRequester.requestFocus()
                 }
             )
 
-            Column(
-                modifier = Modifier.padding(top = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.creation_priority_title),
-                    style = MaterialTheme.typography.bodyMedium.semiBold
-                )
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Task.Priority.entries.forEach { priority ->
-                        SegmentedButton(
-                            selected = priority == state.task.priority,
-                            shape = when (priority) {
-                                Task.Priority.LOW -> RoundedCornerShape(
-                                    topStart = MaterialTheme.shapes.medium.topStart,
-                                    bottomStart = MaterialTheme.shapes.medium.bottomStart,
-                                    topEnd = ZeroCornerSize,
-                                    bottomEnd = ZeroCornerSize
-                                )
-
-                                Task.Priority.MEDIUM -> RoundedCornerShape(0.dp)
-
-                                Task.Priority.HIGH -> RoundedCornerShape(
-                                    topStart = ZeroCornerSize,
-                                    bottomStart = ZeroCornerSize,
-                                    topEnd = MaterialTheme.shapes.medium.topEnd,
-                                    bottomEnd = MaterialTheme.shapes.medium.bottomEnd
-                                )
-                            },
-                            onClick = {
-                                onEvent(CreationScreenEvent.PriorityChangedEvent(priority))
-                            },
-                            label = {
-                                Text(text = priority.name)
-                            }
-                        )
-                    }
+            TaskyDatePickerField(
+                modifier = Modifier.fillMaxWidth(),
+                focusRequester = dateFocusRequester,
+                date = state.task.date,
+                isError = state.dateFieldError,
+                onDateSelected = {
+                    onEvent(CreationScreenEvent.OnDateSelected(it))
                 }
+            )
+
+            PriorityButtonRow(
+                priority = state.task.priority,
+                onClick = { priority ->
+                    onEvent(CreationScreenEvent.PriorityChangedEvent(priority))
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PriorityButtonRow(
+    priority: Task.Priority,
+    onClick: (Task.Priority) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.creation_priority_title),
+            style = MaterialTheme.typography.bodyMedium.semiBold
+        )
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Task.Priority.entries.forEach {
+                SegmentedButton(
+                    selected = it == priority,
+                    shape = when (it) {
+                        Task.Priority.LOW -> RoundedCornerShape(
+                            topStart = MaterialTheme.shapes.medium.topStart,
+                            bottomStart = MaterialTheme.shapes.medium.bottomStart,
+                            topEnd = ZeroCornerSize,
+                            bottomEnd = ZeroCornerSize
+                        )
+
+                        Task.Priority.MEDIUM -> RoundedCornerShape(0.dp)
+
+                        Task.Priority.HIGH -> RoundedCornerShape(
+                            topStart = ZeroCornerSize,
+                            bottomStart = ZeroCornerSize,
+                            topEnd = MaterialTheme.shapes.medium.topEnd,
+                            bottomEnd = MaterialTheme.shapes.medium.bottomEnd
+                        )
+                    },
+                    onClick = {
+                        onClick(it)
+                    },
+                    label = {
+                        Text(text = it.name)
+                    }
+                )
             }
         }
     }

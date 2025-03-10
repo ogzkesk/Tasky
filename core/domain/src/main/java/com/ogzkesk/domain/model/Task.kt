@@ -5,8 +5,8 @@ data class Task(
     val description: String?,
     val priority: Priority,
     val isCompleted: Boolean,
-    val isDeleted: Boolean,
     val createdAt: Long,
+    val date: Long,
     val id: Long = 0,
 ) {
     enum class Priority {
@@ -21,8 +21,8 @@ data class Task(
             description = null,
             priority = Priority.LOW,
             isCompleted = false,
-            isDeleted = false,
             createdAt = 0,
+            date = 0
         )
     }
 }

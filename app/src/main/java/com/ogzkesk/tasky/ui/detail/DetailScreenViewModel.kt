@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.ogzkesk.database.mvi.ViewModel
+import com.ogzkesk.domain.logger.Logger
 import com.ogzkesk.domain.task.TaskRepository
 import com.ogzkesk.domain.util.IoDispatcher
 import com.ogzkesk.tasky.navigation.DetailScreenRoute
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class DetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val taskRepository: TaskRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val logger: Logger,
 ) : ViewModel<DetailScreenState, DetailScreenEvent>(DetailScreenState()) {
 
     init {
@@ -24,8 +26,8 @@ class DetailScreenViewModel @Inject constructor(
             taskRepository.getById(
                 id = savedStateHandle.toRoute<DetailScreenRoute>().id
             ).collect { task ->
-                updateState {
-                    it.copy(task = task)
+                updateState { state ->
+                    task?.let { state.copy(task = task) } ?: state.copy(isDeleted = true)
                 }
             }
         }
@@ -36,7 +38,9 @@ class DetailScreenViewModel @Inject constructor(
             is DetailScreenEvent.ToggleTaskCompleted -> withState {
                 viewModelScope.launch {
                     task?.let {
-                        taskRepository.complete(it)
+                        taskRepository.update(
+                            it.copy(isCompleted = event.value)
+                        )
                     }
                 }
             }
@@ -47,22 +51,11 @@ class DetailScreenViewModel @Inject constructor(
                 }
             }
 
-            is DetailScreenEvent.MoveToTrash -> withState {
+            is DetailScreenEvent.DeleteTask -> withState {
                 viewModelScope.launch {
                     task?.let {
-                        taskRepository.moveToTrash(it)
-                        // TODO check
-                        event.callback()
-                    }
-                }
-            }
-
-            is DetailScreenEvent.RestoreFromTrash -> withState {
-                viewModelScope.launch {
-                    task?.let {
-                        taskRepository.restoreFromTrash(it)
-                        // TODO check
-                        event.callback()
+                        taskRepository.delete(it)
+                        logger.d("deleted task: $it")
                     }
                 }
             }

@@ -17,7 +17,6 @@ import com.ogzkesk.tasky.ui.home.HomeScreen
 import com.ogzkesk.tasky.ui.home.HomeScreenViewModel
 import com.ogzkesk.tasky.ui.settings.SettingsScreen
 import com.ogzkesk.tasky.ui.settings.SettingsScreenViewModel
-import com.ogzkesk.tasky.ui.splash.SplashScreen
 
 @Composable
 fun MainNavHost(
@@ -26,12 +25,8 @@ fun MainNavHost(
     Surface {
         NavHost(
             navController = navController,
-            startDestination = SplashScreenRoute
+            startDestination = HomeScreenRoute
         ) {
-            composable<SplashScreenRoute> {
-                SplashScreen(navController = navController)
-            }
-
             composable<HomeScreenRoute> {
                 val viewModel: HomeScreenViewModel = hiltViewModel()
                 val state by viewModel.state.collectAsStateWithLifecycle()

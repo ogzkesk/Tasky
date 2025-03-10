@@ -1,5 +1,6 @@
 package com.ogzkesk.tasky.ui.home
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.ogzkesk.domain.ext.toLocalDateTime
 import com.ogzkesk.domain.model.Task
 import com.ogzkesk.tasky.R
 import com.ogzkesk.tasky.navigation.CreationScreenRoute
@@ -38,7 +38,10 @@ import com.ogzkesk.tasky.navigation.DetailScreenRoute
 import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.util.ThemedPreviews
 import kotlinx.collections.immutable.ImmutableList
-import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Timer
+import java.util.TimerTask
+import kotlin.concurrent.schedule
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +62,9 @@ fun HomeScreen(
                 scrollBehavior = topAppBarScrollBehavior,
                 actions = {
                     IconButton(
-                        onClick = {}
+                        onClick = {
+
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -88,7 +93,7 @@ fun HomeScreen(
                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding() + 16.dp,
+                top = paddingValues.calculateTopPadding(),
                 bottom = paddingValues.calculateBottomPadding() + 16.dp,
                 start = 8.dp,
                 end = 8.dp
@@ -134,11 +139,10 @@ private fun TaskItem(
                 text = task.description ?: "",
                 style = MaterialTheme.typography.bodyMedium
             )
+
             Text(
                 modifier = Modifier.align(Alignment.End),
-                text = task.createdAt
-                    .toLocalDateTime()
-                    .format(DateTimeFormatter.ISO_DATE),
+                text = convertDateFormat(task.createdAt),
                 style = MaterialTheme.typography.bodySmall.copy(
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -174,6 +178,20 @@ fun EmptyTaskUI(modifier: Modifier = Modifier) {
     }
 }
 
+private fun convertDateFormat(timeMillis: Long): String {
+    val date = Date(timeMillis)
+    return if (Date().time - date.time < 2 * DateUtils.MINUTE_IN_MILLIS) {
+        "Just Now"
+    } else {
+        DateUtils.getRelativeTimeSpanString(
+            date.time,
+            Date().time,
+            DateUtils.MINUTE_IN_MILLIS,
+            DateUtils.FORMAT_SHOW_DATE
+        ).toString()
+    }
+}
+
 @ThemedPreviews
 @Composable
 private fun HomeScreenPreview() {
@@ -181,201 +199,28 @@ private fun HomeScreenPreview() {
         HomeScreen(
             navController = rememberNavController(),
             state = HomeScreenState(
-                tasks = mockTasks
+                tasks = listOf(
+                    Task(
+                        id = 0,
+                        title = "Task 1",
+                        description = "Description 1",
+                        priority = Task.Priority.HIGH,
+                        createdAt = System.currentTimeMillis(),
+                        date = System.currentTimeMillis(),
+                        isCompleted = false,
+                    ),
+                    Task(
+                        id = 0,
+                        title = "Task 1",
+                        description = "Description 1",
+                        priority = Task.Priority.MEDIUM,
+                        createdAt = System.currentTimeMillis(),
+                        date = System.currentTimeMillis(),
+                        isCompleted = true
+                    )
+                )
             ),
             onEvent = {}
         )
     }
 }
-
-val mockTasks = listOf(
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.MEDIUM,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.LOW,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = null,
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.LOW,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.MEDIUM,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.MEDIUM,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.MEDIUM,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.LOW,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.MEDIUM,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-    Task(
-        id = 0,
-        title = "Task 1",
-        description = "Description 1",
-        priority = Task.Priority.HIGH,
-        createdAt = System.currentTimeMillis(),
-        isCompleted = true,
-        isDeleted = false
-    ),
-)

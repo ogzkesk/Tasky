@@ -8,4 +8,5 @@ sealed interface CreationScreenEvent : ViewEvent {
     data class TitleTextChangedEvent(val text: String) : CreationScreenEvent
     data class DescriptionTextChangedEvent(val text: String) : CreationScreenEvent
     data class PriorityChangedEvent(val priority: Task.Priority) : CreationScreenEvent
+    data class OnDateSelected(val millis: Long) : CreationScreenEvent
 }
