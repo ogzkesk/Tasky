@@ -226,4 +226,4 @@ val ColorScheme.placeholder: Color
     get() = MaterialTheme.colorScheme.onBackground.halfAlpha
 
 val Color.halfAlpha get() = copy(alpha = 0.5F)
-val Color.lowAlpha get() = copy(alpha = 0.5F)
+val Color.lowAlpha get() = copy(alpha = 0.2F)

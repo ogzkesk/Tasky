@@ -18,5 +18,6 @@
     <string name="detail_screen_moved_to_trash_message">Moved to trash</string>
     <string name="detail_screen_restored_from_trash_message">Restored from trash</string>
     <string name="creation_date_field_label">Date</string>
+    <string name="home_screen_priority">"Priority: %1$s"</string>
 
 </resources>

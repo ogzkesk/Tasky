@@ -5,6 +5,7 @@ import com.ogzkesk.database.mvi.ViewModel
 import com.ogzkesk.domain.logger.Logger
 import com.ogzkesk.domain.task.TaskRepository
 import com.ogzkesk.domain.util.IoDispatcher
+import com.ogzkesk.tasky.ui.home.HomeScreenState.SortingMethod
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -20,8 +21,8 @@ class HomeScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch(ioDispatcher) {
             taskRepository.stream().collect { tasks ->
-                updateState {
-                    it.copy(tasks = tasks)
+                updateState { state ->
+                    state.copy(tasks = tasks)
                 }
                 logger.d("Task Stream: $tasks")
             }
@@ -29,11 +30,28 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     override fun onEvent(event: HomeScreenEvent) {
-        when(event){
-            HomeScreenEvent.ShowDropdownMenu -> updateState {
-                it.copy(showDropdownMenu = true)
+        when (event) {
+            is HomeScreenEvent.ToggleDropdownMenu -> updateState {
+                it.copy(showDropdownMenu = event.value)
             }
 
+            is HomeScreenEvent.OnSortMethodChanged -> updateState { state ->
+                val sorted = when (event.sortingMethod) {
+                    SortingMethod.Default -> state.tasks?.sortedByDescending { it.createdAt }
+                    SortingMethod.Priority -> state.tasks?.sortedByDescending { it.priority }
+                    SortingMethod.Date -> state.tasks?.sortedByDescending { it.date }
+                    SortingMethod.Alphabetically -> state.tasks?.sortedBy { it.title }
+                }
+                state.copy(
+                    tasks = sorted,
+                    sortingMethod = event.sortingMethod,
+                    showDropdownMenu = false
+                )
+            }
+
+            is HomeScreenEvent.OnTabSelected -> updateState {
+                it.copy(selectedTab = event.tab)
+            }
         }
     }
 }
