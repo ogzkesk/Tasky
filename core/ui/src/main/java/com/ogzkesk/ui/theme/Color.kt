@@ -1,5 +1,6 @@
 package com.ogzkesk.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -225,6 +226,14 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF4A473D)
 val ColorPriorityLow = Color(0xFF2AC489)
 val ColorPriorityMedium = Color(0xFFFFB12A)
 val ColorPriorityHigh = Color(0xFFE64B3C)
+
+val ColorDate: Color
+    @Composable
+    get() = if (isSystemInDarkTheme())
+        Color(0xFF99CAFF)
+    else
+        Color(0xFF007AFF)
+
 
 val IndicatorBrush = Brush.linearGradient(
     listOf(

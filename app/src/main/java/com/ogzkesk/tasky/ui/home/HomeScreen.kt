@@ -1,6 +1,5 @@
 package com.ogzkesk.tasky.ui.home
 
-import android.text.format.DateUtils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.ogzkesk.database.util.getRelativeTimeSpanString
 import com.ogzkesk.domain.ext.toLocalDateTime
 import com.ogzkesk.domain.model.Task
 import com.ogzkesk.tasky.R
@@ -62,6 +62,7 @@ import com.ogzkesk.tasky.ui.home.content.HomeMenu
 import com.ogzkesk.tasky.ui.home.content.HomeSpotlight
 import com.ogzkesk.tasky.ui.home.content.HomeTabRow
 import com.ogzkesk.ui.composable.TaskyAlertDialog
+import com.ogzkesk.ui.theme.ColorDate
 import com.ogzkesk.ui.theme.ColorPriorityHigh
 import com.ogzkesk.ui.theme.ColorPriorityLow
 import com.ogzkesk.ui.theme.ColorPriorityMedium
@@ -70,7 +71,6 @@ import com.ogzkesk.ui.util.ThemedPreviews
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -244,7 +244,7 @@ private fun TaskItem(
                 )
 
                 Text(
-                    text = convertDateFormat(task.createdAt),
+                    text = task.createdAt.getRelativeTimeSpanString(),
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -296,33 +296,21 @@ private fun TaskItem(
                         modifier = Modifier.size(16.dp),
                         imageVector = Icons.Outlined.DateRange,
                         contentDescription = "date",
+                        tint = ColorDate
                     )
                     Text(
                         text = task.date
                             .toLocalDateTime()
                             .format(DateTimeFormatter.ISO_DATE),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = ColorDate
+                        ),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
                 }
             }
         }
-    }
-}
-
-
-private fun convertDateFormat(timeMillis: Long): String {
-    val date = Date(timeMillis)
-    return if (Date().time - date.time < 2 * DateUtils.MINUTE_IN_MILLIS) {
-        "Just Now"
-    } else {
-        DateUtils.getRelativeTimeSpanString(
-            date.time,
-            Date().time,
-            DateUtils.MINUTE_IN_MILLIS,
-            DateUtils.FORMAT_SHOW_DATE
-        ).toString()
     }
 }
 

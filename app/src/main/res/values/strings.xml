@@ -37,5 +37,9 @@
     <string name="home_screen_spotlight_description">Start creating tasks with using fab</string>
     <string name="home_screen_spotlight_title">Tasks are empty</string>
     <string name="home_screen_title">Home</string>
+    <string name="detail_screen_priority_title">Priority:</string>
+    <string name="detail_screen_date_title">Date:</string>
+    <string name="detail_screen_completed_checkbox_text">Completed:</string>
+    <string name="detail_screen_created_at_title">Created at:</string>
 
 </resources>
