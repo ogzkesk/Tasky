@@ -10,4 +10,5 @@ interface TaskDataSource {
     suspend fun updateTask(task: Task)
     suspend fun deleteTask(task: Task)
     suspend fun clear()
+    suspend fun addSample()
 }

@@ -1,0 +1,162 @@
+[
+  {
+    "title": "Buy groceries",
+    "description": "Milk, eggs, bread",
+    "priority": "MEDIUM",
+    "isCompleted": true,
+    "createdAt": 1678900000000,
+    "date": 1678986400000
+  },
+  {
+    "title": "Finish project",
+    "description": "Complete the Room implementation",
+    "priority": "HIGH",
+    "isCompleted": true,
+    "createdAt": 1678900000000,
+    "date": 1679072800000
+  },
+  {
+    "title": "Schedule dentist appointment",
+    "description": "Annual checkup and cleaning",
+    "priority": "LOW",
+    "isCompleted": true,
+    "createdAt": 1678900100000,
+    "date": 1679159200000
+  },
+  {
+    "title": "Gym workout",
+    "description": "Leg day - squats, lunges, leg press",
+    "priority": "MEDIUM",
+    "isCompleted": true,
+    "createdAt": 1678900200000,
+    "date": 1678900200000
+  },
+  {
+    "title": "Pay utility bills",
+    "description": "Electric, water, and internet",
+    "priority": "HIGH",
+    "isCompleted": true,
+    "createdAt": 1678900300000,
+    "date": 1679245600000
+  },
+  {
+    "title": "Call mom",
+    "description": "Check how she's doing",
+    "priority": "MEDIUM",
+    "isCompleted": false,
+    "createdAt": 1678900400000,
+    "date": 1679332000000
+  },
+  {
+    "title": "Prepare presentation",
+    "description": "Q1 results for team meeting",
+    "priority": "HIGH",
+    "isCompleted": false,
+    "createdAt": 1678900500000,
+    "date": 1679418400000
+  },
+  {
+    "title": "Fix kitchen sink",
+    "description": "Get new washer and wrench",
+    "priority": "LOW",
+    "isCompleted": true,
+    "createdAt": 1678900600000,
+    "date": 1679504800000
+  },
+  {
+    "title": "Book flight tickets",
+    "description": "Summer vacation to Barcelona",
+    "priority": "MEDIUM",
+    "isCompleted": false,
+    "createdAt": 1678900700000,
+    "date": 1679591200000
+  },
+  {
+    "title": "Study Android development",
+    "description": "Focus on Jetpack Compose",
+    "priority": "HIGH",
+    "isCompleted": false,
+    "createdAt": 1678900800000,
+    "date": 1679677600000
+  },
+  {
+    "title": "Plan weekend hike",
+    "description": "Research trails at national park",
+    "priority": "LOW",
+    "isCompleted": false,
+    "createdAt": 1678900900000,
+    "date": 1679764000000
+  },
+  {
+    "title": "Schedule car maintenance",
+    "description": "Oil change and tire rotation",
+    "priority": "MEDIUM",
+    "isCompleted": false,
+    "createdAt": 1678901000000,
+    "date": 1679850400000
+  },
+  {
+    "title": "Renew passport",
+    "description": "Fill out forms and get photos",
+    "priority": "HIGH",
+    "isCompleted": true,
+    "createdAt": 1678901100000,
+    "date": 1679936800000
+  },
+  {
+    "title": "Buy birthday gift",
+    "description": "For Sarah's party next week",
+    "priority": "MEDIUM",
+    "isCompleted": false,
+    "createdAt": 1678901200000,
+    "date": 1680023200000
+  },
+  {
+    "title": "Clean garage",
+    "description": "Organize tools and donate old items",
+    "priority": "LOW",
+    "isCompleted": true,
+    "createdAt": 1678901300000,
+    "date": 1680109600000
+  },
+  {
+    "title": "Update resume",
+    "description": "Add recent projects and skills",
+    "priority": "MEDIUM",
+    "isCompleted": false,
+    "createdAt": 1678901400000,
+    "date": 1680196000000
+  },
+  {
+    "title": "Submit quarterly taxes",
+    "description": "Gather receipts and fill forms",
+    "priority": "HIGH",
+    "isCompleted": false,
+    "createdAt": 1678901500000,
+    "date": 1680282400000
+  },
+  {
+    "title": "Plant garden",
+    "description": "Buy seeds and prepare soil",
+    "priority": "LOW",
+    "isCompleted": false,
+    "createdAt": 1678901600000,
+    "date": 1680368800000
+  },
+  {
+    "title": "Check investment portfolio",
+    "description": "Review and rebalance assets",
+    "priority": "MEDIUM",
+    "isCompleted": true,
+    "createdAt": 1678901700000,
+    "date": 1680455200000
+  },
+  {
+    "title": "Write blog post",
+    "description": "Android Room database tutorial",
+    "priority": "HIGH",
+    "isCompleted": false,
+    "createdAt": 1678901800000,
+    "date": 1680541600000
+  }
+]

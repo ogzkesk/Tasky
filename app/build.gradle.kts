@@ -32,7 +32,14 @@ android {
         extensions.getByType(BasePluginExtension::class.java).archivesName.set("v$versionName")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         signingConfig = signingConfigs.getByName("release")
-        vectorDrawables { useSupportLibrary = true }
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+
+        ksp {
+            arg("room.schemaLocation", "${projectDir}/schemas")
+        }
     }
 
     buildTypes {
@@ -80,6 +87,8 @@ dependencies {
 
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.androidx.core.splashscreen)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.junit)

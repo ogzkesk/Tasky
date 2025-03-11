@@ -29,4 +29,8 @@ class TaskRepositoryImpl @Inject constructor(
     override suspend fun clear() {
         localDataSource.clear()
     }
+
+    override suspend fun addSample() {
+        localDataSource.addSample()
+    }
 }

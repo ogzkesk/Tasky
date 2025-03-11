@@ -10,4 +10,5 @@ interface TaskRepository {
     suspend fun update(task: Task)
     suspend fun delete(task: Task)
     suspend fun clear()
+    suspend fun addSample()
 }

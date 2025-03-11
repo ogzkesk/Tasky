@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.ogzkesk.database.TaskDao
 import com.ogzkesk.database.TaskDataSourceImpl
 import com.ogzkesk.database.TaskDatabase
+import com.ogzkesk.domain.logger.Logger
 import com.ogzkesk.domain.task.TaskDataSource
 import dagger.Module
 import dagger.Provides
@@ -33,6 +34,12 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideTaskDataSource(
-        dao: TaskDao
-    ): TaskDataSource = TaskDataSourceImpl(dao)
+        dao: TaskDao,
+        logger: Logger,
+        @ApplicationContext context: Context,
+    ): TaskDataSource = TaskDataSourceImpl(
+        dao = dao,
+        logger = logger,
+        context = context
+    )
 }

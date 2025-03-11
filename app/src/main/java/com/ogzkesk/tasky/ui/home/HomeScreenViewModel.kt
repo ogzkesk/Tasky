@@ -84,7 +84,9 @@ class HomeScreenViewModel @Inject constructor(
             }
 
             HomeScreenEvent.InsertTestData -> updateState {
-                // TODO insert from file
+                viewModelScope.launch {
+                    taskRepository.addSample()
+                }
                 it.copy(showMenu = false)
             }
 
