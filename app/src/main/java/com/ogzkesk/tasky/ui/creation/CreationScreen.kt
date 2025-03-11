@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -89,7 +90,8 @@ fun CreationScreen(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp)
+                        .testTag("create_button"),
                     shape = MaterialTheme.shapes.medium,
                     onClick = {
                         focusManager.clearFocus()
@@ -115,6 +117,7 @@ fun CreationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TaskyTextField(
+                modifier = Modifier.testTag("title_input"),
                 value = state.task.title,
                 onValueChange = {
                     onEvent(CreationScreenEvent.TitleTextChangedEvent(it))
@@ -130,7 +133,9 @@ fun CreationScreen(
             )
 
             TaskyTextField(
-                modifier = Modifier.height(200.dp),
+                modifier = Modifier
+                    .height(200.dp)
+                    .testTag("description_input"),
                 value = state.task.description.orEmpty(),
                 singleLine = false,
                 onValueChange = {

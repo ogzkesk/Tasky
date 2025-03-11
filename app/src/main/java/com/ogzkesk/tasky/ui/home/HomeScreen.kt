@@ -1,5 +1,6 @@
 package com.ogzkesk.tasky.ui.home
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -25,11 +26,15 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +48,8 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -56,11 +63,11 @@ import com.ogzkesk.tasky.R
 import com.ogzkesk.tasky.navigation.CreationScreenRoute
 import com.ogzkesk.tasky.navigation.DetailScreenRoute
 import com.ogzkesk.tasky.navigation.SettingsScreenRoute
-import com.ogzkesk.tasky.ui.home.content.HomeDismissBox
 import com.ogzkesk.tasky.ui.home.content.HomeHeaderContent
 import com.ogzkesk.tasky.ui.home.content.HomeMenu
 import com.ogzkesk.tasky.ui.home.content.HomeSpotlight
 import com.ogzkesk.tasky.ui.home.content.HomeTabRow
+import com.ogzkesk.ui.composable.DismissBoxLayout
 import com.ogzkesk.ui.composable.TaskyAlertDialog
 import com.ogzkesk.ui.theme.ColorDate
 import com.ogzkesk.ui.theme.ColorPriorityHigh
@@ -79,6 +86,7 @@ fun HomeScreen(
     state: HomeScreenState,
     onEvent: (HomeScreenEvent) -> Unit,
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var spotlightBounds: Rect? by remember { mutableStateOf(null) }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -122,14 +130,16 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                modifier = Modifier.onGloballyPositioned {
-                    if (spotlightBounds == null) {
-                        coroutineScope.launch {
-                            delay(1000)
-                            spotlightBounds = it.boundsInWindow()
+                modifier = Modifier
+                    .onGloballyPositioned {
+                        if (spotlightBounds == null) {
+                            coroutineScope.launch {
+                                delay(1000)
+                                spotlightBounds = it.boundsInWindow()
+                            }
                         }
                     }
-                },
+                    .testTag("add_task"),
                 onClick = dropUnlessResumed {
                     navController.navigate(CreationScreenRoute)
                 }
@@ -179,10 +189,48 @@ fun HomeScreen(
                     },
                     key = { it.id }
                 ) { task ->
-                    HomeDismissBox(
-                        task = task,
-                        snackbarHostState = snackbarHostState,
-                        onEvent = onEvent
+                    DismissBoxLayout(
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = tween(200),
+                            fadeOutSpec = tween(200)
+                        ),
+                        state = rememberSwipeToDismissBoxState(
+                            confirmValueChange = {
+                                return@rememberSwipeToDismissBoxState when (it) {
+                                    SwipeToDismissBoxValue.StartToEnd -> {
+                                        coroutineScope.launch {
+                                            onEvent(HomeScreenEvent.CompleteTask(task))
+                                            showUndoSnackbar(
+                                                context,
+                                                snackbarHostState,
+                                                context.getString(R.string.home_screen_completed_task_message),
+                                            ) {
+                                                onEvent(
+                                                    HomeScreenEvent.UndoCompletedTask(task)
+                                                )
+                                            }
+                                        }
+                                        false
+                                    }
+
+                                    SwipeToDismissBoxValue.EndToStart -> {
+                                        coroutineScope.launch {
+                                            onEvent(HomeScreenEvent.RemoveTask(task))
+                                            showUndoSnackbar(
+                                                context,
+                                                snackbarHostState,
+                                                context.getString(R.string.home_screen_removed_task_message),
+                                            ) {
+                                                onEvent(HomeScreenEvent.UndoRemovedTask(task))
+                                            }
+                                        }
+                                        true
+                                    }
+
+                                    SwipeToDismissBoxValue.Settled -> false
+                                }
+                            }
+                        )
                     ) {
                         TaskItem(
                             task = task,
@@ -311,6 +359,22 @@ private fun TaskItem(
                 }
             }
         }
+    }
+}
+
+private suspend fun showUndoSnackbar(
+    context: Context,
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    onUndo: () -> Unit
+) {
+    val result = snackbarHostState.showSnackbar(
+        message = message,
+        duration = SnackbarDuration.Short,
+        actionLabel = context.getString(R.string.home_screen_snackbar_undo_action),
+    )
+    if (result == SnackbarResult.ActionPerformed) {
+        onUndo()
     }
 }
 

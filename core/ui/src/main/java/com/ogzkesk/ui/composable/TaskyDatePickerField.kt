@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.ogzkesk.domain.ext.toLocalDateTime
 import com.ogzkesk.ui.R
@@ -48,7 +49,8 @@ fun TaskyDatePickerField(
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     showDatePicker = it.hasFocus
-                },
+                }
+                .testTag("calendar_input"),
             isError = isError,
             value = if (date == 0L) {
                 ""
@@ -79,6 +81,7 @@ fun TaskyDatePickerField(
 
     if (showDatePicker) {
         DatePickerDialog(
+            modifier = Modifier.testTag("calendar_dialog"),
             onDismissRequest = {},
             confirmButton = {
                 TextButton(
