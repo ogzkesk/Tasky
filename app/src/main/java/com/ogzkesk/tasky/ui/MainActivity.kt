@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ogzkesk.domain.prefs.PreferencesRepository
 import com.ogzkesk.domain.prefs.model.Preferences
@@ -29,11 +30,13 @@ class MainActivity : ComponentActivity() {
                 Preferences()
             )
             TaskyTheme(
-                darkTheme = when (prefs.theme) {
-                    Theme.Light -> false
-                    Theme.Dark -> true
-                    Theme.System -> isSystemInDarkTheme()
+                darkTheme = when (prefs.theme.mode) {
+                    Theme.Mode.Light -> false
+                    Theme.Mode.Dark -> true
+                    Theme.Mode.System -> isSystemInDarkTheme()
                 },
+                dynamicColor = prefs.theme.dynamicColor,
+                primaryColor = prefs.theme.primaryColorHex?.let { Color(it) }
             ) {
                 MainNavHost()
             }

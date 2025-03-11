@@ -8,7 +8,6 @@ import com.ogzkesk.domain.prefs.model.Preferences
 import com.ogzkesk.domain.util.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.security.SecureRandom
@@ -22,9 +21,7 @@ class PreferencesRepositoryImpl(
 
     override suspend fun setPreferences(block: (Preferences) -> Preferences) {
         withContext(ioDispatcher) {
-            preferences.updateData {
-                block.invoke(getPreferences().first())
-            }
+            preferences.updateData(block)
         }
     }
 

@@ -29,18 +29,39 @@ class SettingsScreenViewModel @Inject constructor(
         when (event) {
             is SettingsScreenEvent.OnThemeSelected -> updateState { state ->
                 viewModelScope.launch {
-                    preferencesRepository.setPreferences {
-                        it.copy(theme = event.theme)
+                    preferencesRepository.setPreferences { prefs ->
+                        prefs.copy(theme = prefs.theme.copy(mode = event.mode))
                     }
                 }
                 state.copy(
-                    currentTheme = event.theme,
+                    currentTheme = state.currentTheme.copy(mode = event.mode),
                     themeDialogState = false
                 )
             }
 
             is SettingsScreenEvent.ToggleThemeDialog -> updateState {
                 it.copy(themeDialogState = event.value)
+            }
+
+            is SettingsScreenEvent.OnDynamicColorChanged -> {
+                viewModelScope.launch {
+                    preferencesRepository.setPreferences { prefs ->
+                        prefs.copy(theme = prefs.theme.copy(dynamicColor = event.dynamicColor))
+                    }
+                }
+            }
+
+            is SettingsScreenEvent.OnPrimaryColorSelected -> updateState { state ->
+                viewModelScope.launch {
+                    preferencesRepository.setPreferences { prefs ->
+                        prefs.copy(theme = prefs.theme.copy(primaryColorHex = event.color.value))
+                    }
+                }
+                state.copy(colorPickerDialogState = false)
+            }
+
+            is SettingsScreenEvent.ToggleColorPickerDialog -> updateState {
+                it.copy(colorPickerDialogState = event.value)
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -247,6 +248,7 @@ private val highContrastDarkColorScheme = darkColorScheme(
 fun TaskyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
+    primaryColor: Color? = null,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -260,17 +262,16 @@ fun TaskyTheme(
     }
 
     val view = LocalView.current
-    val isDarkTheme = colorScheme == darkScheme
     val window = (view.context as? ComponentActivity)?.window
     SideEffect {
         window?.let {
             val insetsController = WindowCompat.getInsetsController(window, view)
-            insetsController.isAppearanceLightStatusBars = !isDarkTheme
+            insetsController.isAppearanceLightStatusBars = !darkTheme
         }
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = colorScheme.copy(primary = primaryColor ?: colorScheme.primary),
         typography = AppTypography,
         content = content
     )

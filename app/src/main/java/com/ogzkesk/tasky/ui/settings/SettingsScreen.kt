@@ -1,5 +1,6 @@
 package com.ogzkesk.tasky.ui.settings
 
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.colorspace.Rgb
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,6 +36,7 @@ import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ogzkesk.tasky.R
+import com.ogzkesk.tasky.ui.settings.dialog.ColorPickerDialog
 import com.ogzkesk.tasky.ui.settings.dialog.ThemeDialog
 import com.ogzkesk.ui.composable.TaskyTopBar
 import com.ogzkesk.ui.theme.TaskyTheme
@@ -46,13 +51,24 @@ fun SettingsScreen(
     onEvent: (SettingsScreenEvent) -> Unit,
 ) {
     ThemeDialog(
-        currentTheme = state.currentTheme,
+        currentTheme = state.currentTheme.mode,
         enabled = state.themeDialogState,
         onDismiss = dropUnlessResumed {
             onEvent(SettingsScreenEvent.ToggleThemeDialog(false))
         },
         onThemeSelected = { theme ->
             onEvent(SettingsScreenEvent.OnThemeSelected(theme))
+        }
+    )
+
+    ColorPickerDialog(
+        enabled = state.colorPickerDialogState,
+        currentPrimaryColor = state.currentTheme.primaryColorHex?.let { Color(it) },
+        onColorSelected = {
+          onEvent(SettingsScreenEvent.OnPrimaryColorSelected(it))
+        },
+        onDismiss = {
+            onEvent(SettingsScreenEvent.ToggleColorPickerDialog(false))
         }
     )
 
@@ -89,39 +105,50 @@ fun SettingsScreen(
                 label = stringResource(R.string.settings_screen_primary_color_title),
                 contentDescription = "primary_color",
                 leadingIcon = Icons.Outlined.Colorize,
-                onClick = {}
+                onClick = {
+                    onEvent(SettingsScreenEvent.ToggleColorPickerDialog(true))
+                }
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                    }
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onEvent(
+                                SettingsScreenEvent.OnDynamicColorChanged(
+                                    !state.currentTheme.dynamicColor
+                                )
+                            )
+                        }
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FormatColorFill,
-                        contentDescription = "dynamic_colors",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = stringResource(R.string.settings_screen_dynamic_colors_title),
-                        style = MaterialTheme.typography.bodyLarge
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.FormatColorFill,
+                            contentDescription = "dynamic_colors",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.settings_screen_dynamic_colors_title),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                    Switch(
+                        modifier = Modifier.height(24.dp),
+                        checked = state.currentTheme.dynamicColor,
+                        onCheckedChange = {
+                            onEvent(SettingsScreenEvent.OnDynamicColorChanged(it))
+                        }
                     )
                 }
-                Switch(
-                    modifier = Modifier.height(24.dp),
-                    checked = true,
-                    onCheckedChange = {}
-                )
+                HorizontalDivider()
             }
-            HorizontalDivider()
         }
     }
 }

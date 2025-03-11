@@ -46,5 +46,7 @@
     <string name="settings_screen_primary_color_title">Primary Color</string>
     <string name="settings_screen_dynamic_colors_title">Dynamic Colors</string>
     <string name="settings_dialog_select_theme">Select theme</string>
+    <string name="settings_screen_apply_button_text">Apply</string>
+    <string name="settings_screen_cancel_button_text">Cancel</string>
 
 </resources>

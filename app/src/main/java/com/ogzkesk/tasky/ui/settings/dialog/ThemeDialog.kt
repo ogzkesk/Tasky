@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -21,16 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.ogzkesk.domain.prefs.model.Theme
 import com.ogzkesk.tasky.R
-import com.ogzkesk.ui.theme.ColorDate
 import com.ogzkesk.ui.theme.semiBold
 
 @Composable
 fun ThemeDialog(
     modifier: Modifier = Modifier,
-    currentTheme: Theme,
+    currentTheme: Theme.Mode,
     enabled: Boolean,
     onDismiss: () -> Unit,
-    onThemeSelected: (Theme) -> Unit
+    onThemeSelected: (Theme.Mode) -> Unit
 ) {
     if (enabled) {
         var selectedTheme by remember { mutableStateOf(currentTheme) }
@@ -43,7 +42,7 @@ fun ThemeDialog(
                         text = stringResource(R.string.settings_dialog_select_theme),
                         style = MaterialTheme.typography.titleSmall.semiBold
                     )
-                    Theme.entries.forEach { theme ->
+                    Theme.Mode.entries.forEach { theme ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -66,13 +65,10 @@ fun ThemeDialog(
                 }
             },
             confirmButton = {
-                TextButton(
+                Button(
                     onClick = {
                         onThemeSelected(selectedTheme)
                     },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = ColorDate
-                    )
                 ) {
                     Text(text = stringResource(com.ogzkesk.ui.R.string.dialog_confirm_button_text))
                 }
