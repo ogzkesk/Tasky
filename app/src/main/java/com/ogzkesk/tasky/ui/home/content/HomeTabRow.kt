@@ -15,7 +15,8 @@ fun HomeTabRow(
     onEvent: (HomeScreenEvent) -> Unit,
 ) {
     TabRow(
-        selectedTabIndex = selectedTab.ordinal
+        modifier = modifier,
+        selectedTabIndex = selectedTab.ordinal,
     ) {
         HomeScreenState.HomeTab.entries.forEach {
             Tab(
@@ -25,7 +26,7 @@ fun HomeTabRow(
                 },
                 text = {
                     Text(text = it.name)
-                }
+                },
             )
         }
     }

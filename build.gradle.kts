@@ -57,18 +57,17 @@ subprojects {
     }
 }
 
-// TODO <--------------
-//allprojects {
-//    tasks.whenTaskAdded {
-//        if (name == "preBuild") {
-//            doLast {
-//                copy {
-//                    description = "Copy pre-commit script from hooks/"
-//                    group = "hooks"
-//                    from("$rootDir/hooks/pre-commit")
-//                    into("$rootDir/.git/hooks/")
-//                }
-//            }
-//        }
-//    }
-//}
+allprojects {
+    tasks.whenTaskAdded {
+        if (name == "preBuild") {
+            doLast {
+                copy {
+                    description = "Copy pre-commit script from hooks/"
+                    group = "hooks"
+                    from("$rootDir/hooks/pre-commit")
+                    into("$rootDir/.git/hooks/")
+                }
+            }
+        }
+    }
+}

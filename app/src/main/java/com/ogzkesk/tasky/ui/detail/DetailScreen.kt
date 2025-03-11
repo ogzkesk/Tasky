@@ -24,19 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathOperation
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavHostController
@@ -55,36 +46,6 @@ import com.ogzkesk.ui.theme.TaskyTheme
 import com.ogzkesk.ui.theme.semiBold
 import com.ogzkesk.ui.util.ThemedPreviews
 import java.time.format.DateTimeFormatter
-
-class CircularRevealShape(
-    private val center: Offset,
-    private val radius: Float
-) : Shape {
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        val path = Path().apply {
-            addOval(
-                Rect(
-                    center = center,
-                    radius = radius
-                )
-            )
-        }
-
-        val rectPath = Path().apply {
-            addRect(Rect(Offset.Zero, size))
-        }
-
-        val finalPath = Path().apply {
-            op(rectPath, path, PathOperation.Intersect)
-        }
-
-        return Outline.Generic(finalPath)
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +68,7 @@ fun DetailScreen(
         },
         onDismiss = {
             onEvent(DetailScreenEvent.ToggleTrashDialog(false))
-        }
+        },
     )
 
     Scaffold(
@@ -121,34 +82,34 @@ fun DetailScreen(
                     IconButton(
                         onClick = {
                             onEvent(DetailScreenEvent.ToggleTrashDialog(true))
-                        }
+                        },
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Delete,
-                            contentDescription = "delete"
+                            contentDescription = "delete",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             state.task?.let { task ->
                 Text(
                     text = task.title,
-                    style = MaterialTheme.typography.headlineMedium.semiBold
+                    style = MaterialTheme.typography.headlineMedium.semiBold,
                 )
 
                 Text(
                     modifier = Modifier.padding(bottom = 24.dp),
                     text = task.description.orEmpty(),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
 
                 HorizontalDivider()
@@ -161,7 +122,7 @@ fun DetailScreen(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         val tint = when (task.priority) {
                             Task.Priority.HIGH -> ColorPriorityHigh
@@ -187,9 +148,8 @@ fun DetailScreen(
                     }
 
                     Row(
-
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         Icon(
                             modifier = Modifier.size(16.dp),
@@ -204,7 +164,7 @@ fun DetailScreen(
                                     append(
                                         task.date
                                             .toLocalDateTime()
-                                            .format(DateTimeFormatter.ISO_DATE)
+                                            .format(DateTimeFormatter.ISO_DATE),
                                     )
                                 }
                             },
@@ -226,7 +186,7 @@ fun DetailScreen(
                         checked = task.isCompleted,
                         onCheckedChange = {
                             onEvent(DetailScreenEvent.ToggleTaskCompleted(it))
-                        }
+                        },
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Text(
@@ -238,8 +198,8 @@ fun DetailScreen(
                             }
                         },
                         style = MaterialTheme.typography.bodyMedium.semiBold.copy(
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                            color = MaterialTheme.colorScheme.primary,
+                        ),
                     )
                 }
             }
@@ -260,10 +220,10 @@ private fun HomeScreenPreview() {
                     createdAt = System.currentTimeMillis(),
                     priority = Task.Priority.HIGH,
                     isCompleted = true,
-                    date = System.currentTimeMillis()
-                )
+                    date = System.currentTimeMillis(),
+                ),
             ),
-            onEvent = {}
+            onEvent = {},
         )
     }
 }
