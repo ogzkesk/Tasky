@@ -76,7 +76,6 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:ui"))
     implementation(project(":core:database"))
-    implementation(project(":core:network"))
     implementation(project(":core:domain"))
 
     implementation(libs.hilt)

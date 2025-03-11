@@ -41,5 +41,10 @@
     <string name="detail_screen_date_title">Date:</string>
     <string name="detail_screen_completed_checkbox_text">Completed:</string>
     <string name="detail_screen_created_at_title">Created at:</string>
+    <string name="settings_screen_theme_settings_titlte">Theme Settings</string>
+    <string name="settings_screen_theme_title">Theme</string>
+    <string name="settings_screen_primary_color_title">Primary Color</string>
+    <string name="settings_screen_dynamic_colors_title">Dynamic Colors</string>
+    <string name="settings_dialog_select_theme">Select theme</string>
 
 </resources>

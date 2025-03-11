@@ -19,7 +19,6 @@ class NetworkPagingSource<T : Any>(
                 nextKey = if (responseData.isEmpty()) null else pageKey + 1,
             )
         } catch (e: Exception) {
-            // TODO handle other exceptions
             LoadResult.Error(e)
         }
     }

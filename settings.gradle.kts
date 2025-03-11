@@ -23,6 +23,5 @@ rootProject.name = "Tasky"
 include(":app")
 include(":core:data")
 include(":core:database")
-include(":core:network")
 include(":core:ui")
 include(":core:domain")

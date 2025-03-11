@@ -1,5 +1,8 @@
 package com.ogzkesk.tasky.ui.settings
 
+import com.ogzkesk.domain.prefs.model.Theme
+
 data class SettingsScreenState(
-    val isLoading: Boolean = false,
+    val themeDialogState: Boolean = false,
+    val currentTheme: Theme = Theme.System,
 )
