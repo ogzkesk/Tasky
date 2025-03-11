@@ -3,6 +3,7 @@ package com.ogzkesk.tasky.ui.home
 import androidx.lifecycle.viewModelScope
 import com.ogzkesk.database.mvi.ViewModel
 import com.ogzkesk.domain.logger.Logger
+import com.ogzkesk.domain.model.Task
 import com.ogzkesk.domain.task.TaskRepository
 import com.ogzkesk.domain.util.IoDispatcher
 import com.ogzkesk.tasky.ui.home.HomeScreenState.SortingMethod
@@ -22,7 +23,13 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             taskRepository.stream().collect { tasks ->
                 updateState { state ->
-                    state.copy(tasks = tasks.ifEmpty { null })
+                    val sorted = tasks.ifEmpty { null }?.let {
+                        sort(it, state.sortingMethod)
+                    }
+                    state.copy(
+                        tasks = sorted,
+                        isTasksEmpty = tasks.isEmpty()
+                    )
                 }
                 logger.d("Task Stream: $tasks")
             }
@@ -32,20 +39,15 @@ class HomeScreenViewModel @Inject constructor(
     override fun onEvent(event: HomeScreenEvent) {
         when (event) {
             is HomeScreenEvent.ToggleDropdownMenu -> updateState {
-                it.copy(showDropdownMenu = event.value)
+                it.copy(showSortDropdown = event.value)
             }
 
             is HomeScreenEvent.OnSortMethodChanged -> updateState { state ->
-                val sorted = when (event.sortingMethod) {
-                    SortingMethod.Default -> state.tasks?.sortedByDescending { it.createdAt }
-                    SortingMethod.Priority -> state.tasks?.sortedByDescending { it.priority }
-                    SortingMethod.Date -> state.tasks?.sortedByDescending { it.date }
-                    SortingMethod.Alphabetically -> state.tasks?.sortedBy { it.title }
-                }
+                val sorted = state.tasks?.let { sort(it, event.sortingMethod) }
                 state.copy(
                     tasks = sorted,
                     sortingMethod = event.sortingMethod,
-                    showDropdownMenu = false
+                    showSortDropdown = false
                 )
             }
 
@@ -80,6 +82,49 @@ class HomeScreenViewModel @Inject constructor(
                     taskRepository.add(event.task)
                 }
             }
+
+            HomeScreenEvent.InsertTestData -> updateState {
+                // TODO insert from file
+                it.copy(showMenu = false)
+            }
+
+            HomeScreenEvent.ClearTasks -> updateState {
+                viewModelScope.launch {
+                    taskRepository.clear()
+                }
+                it.copy(showMenu = false)
+            }
+
+            is HomeScreenEvent.ToggleClearDialog -> updateState {
+                it.copy(
+                    clearDialogState = event.value,
+                    showMenu = false
+                )
+            }
+
+            is HomeScreenEvent.ToggleMenu -> updateState {
+                it.copy(showMenu = event.value)
+            }
+
+            is HomeScreenEvent.NavigateToSettings -> updateState {
+                it.copy(
+                    showMenu = false,
+                    navigateToSettings = event.value
+                )
+            }
+
+            is HomeScreenEvent.ToggleSpotlight -> updateState {
+                it.copy(isSpotlightShowed = event.showed)
+            }
+        }
+    }
+
+    private fun sort(tasks: List<Task>, sortingMethod: SortingMethod): List<Task> {
+        return when (sortingMethod) {
+            SortingMethod.Default -> tasks.sortedByDescending { it.createdAt }
+            SortingMethod.Priority -> tasks.sortedByDescending { it.priority }
+            SortingMethod.Date -> tasks.sortedByDescending { it.date }
+            SortingMethod.Alphabetically -> tasks.sortedBy { it.title }
         }
     }
 }

@@ -1,28 +1,41 @@
 <resources>
     <string name="app_name">Tasky</string>
 
-    <string name="home_screen_title">Home</string>
-    <string name="detail_screen_title">Task Details</string>
+    <!-- Settings Screen -->
     <string name="settings_screen_title">Settings</string>
 
     <!-- Creation Screen -->
     <string name="creation_action_save_button_text">Create</string>
+    <string name="creation_date_field_label">Date</string>
     <string name="creation_description_field_label">Description (Optional)</string>
     <string name="creation_description_field_placeholder">Enter Description</string>
     <string name="creation_priority_title">Priority</string>
     <string name="creation_screen_title">Task Creation</string>
     <string name="creation_title_field_label">Title</string>
     <string name="creation_title_field_placeholder">Enter Title</string>
-    <string name="detail_screen_delete_dialog_title">Move to trash</string>
+
+    <!-- Detail Screen -->
     <string name="detail_screen_delete_dialog_message">Are you sure you want to delete this task?</string>
+    <string name="detail_screen_delete_dialog_title">Delete</string>
     <string name="detail_screen_moved_to_trash_message">Moved to trash</string>
     <string name="detail_screen_restored_from_trash_message">Restored from trash</string>
-    <string name="creation_date_field_label">Date</string>
-    <string name="home_screen_completed_task_message">Task completed</string>
-    <string name="home_screen_removed_task_message">Task removed</string>
-    <string name="home_screen_snackbar_undo_action">Undo</string>
-    <string name="home_screen_already_completed_message">This task already completed</string>
+    <string name="detail_screen_title">Task Details</string>
+
+    <!-- Home Screen -->
     <string name="home_circular_completed_tasks">%1$d Completed</string>
     <string name="home_circular_completed_tasks_desc">Out of %1$d task</string>
+    <string name="home_screen_already_completed_message">This task already completed</string>
+    <string name="home_screen_clear_dialog_desc">Are you sure to clear all tasks?</string>
+    <string name="home_screen_clear_dialog_title">Clear</string>
+    <string name="home_screen_clear_tasks">Clear tasks</string>
+    <string name="home_screen_completed_task_message">Task completed</string>
+    <string name="home_screen_menu_insert_tasks">Insert tasks</string>
+    <string name="home_screen_menu_settings">Settings</string>
+    <string name="home_screen_removed_task_message">Task removed</string>
+    <string name="home_screen_snackbar_undo_action">Undo</string>
+    <string name="home_screen_spotlight_confirm_button_text">OK</string>
+    <string name="home_screen_spotlight_description">Start creating tasks with using fab</string>
+    <string name="home_screen_spotlight_title">Tasks are empty</string>
+    <string name="home_screen_title">Home</string>
 
 </resources>

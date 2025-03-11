@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -73,8 +73,8 @@ fun DetailScreen(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "move_to_trash"
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = "delete"
                         )
                     }
                 }
